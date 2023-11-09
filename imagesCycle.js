@@ -1,5 +1,5 @@
 const daily = [
-    {image: './assets/promptImages/1wizards.png', lePrompt: 'grandwizards wearing shades sat in a room smoking', day: 1},
+    {image: 'http://localhost:3000/assets/promptImages/1wizards.png', lePrompt: 'grandwizards wearing shades sat in a room smoking', day: 1},
     {image: './assets/promptImages/2hippo.png', lePrompt: 'drippy fashionable hippopotamus with expensive designer items', day: 2},
     {image: '@/assets/promptImages/3wall.png', lePrompt: 'a child in a dimly lit room with red and white writing on the wall eerie ominous', day: 3},
     {image: '@/assets/promptImages/4skeletons.png', lePrompt: 'a pair of eloping married skeletons smile for the camera', day: 4},
