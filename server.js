@@ -1,17 +1,37 @@
-// // regular node
+// server.js
+const http = require('http');
+const socketIo = require('socket.io');
+const expressApp = require('./app'); // Renamed to expressApp
 
-// const http = require('http')
+// Create an HTTP server for Express
+const expressServer = http.createServer(expressApp);
 
-// const server = http.createServer((req, res) => {
+// Create a separate server for Socket.io
+const ioServer = http.createServer();
 
-//     res.setHeader('Content-Type', 'text/html')
-//     res.write('<h1>Grah graaaah pow! You just got written to...<h1>')
-//     res.write('<p>Diddy<p>')
-//     console.log('heyyy! ur request was made xDD')
-//     res.end
+// Attach Socket.io to the new server
+const io = socketIo(ioServer, {
+    cors: {
+        origin: 'http://localhost:8081', // Adjust this to your frontend origin
+        methods: ['GET', 'POST'],
+    },
+});
 
-// })
+io.on('connection', (socket) => {
+    // Handle Socket.io events here if needed
+    console.log('A user connected');
+});
 
-// server.listen(3000, 'localhost', () => {
-//     console.log('Currently listening for requests on localhost 3000')
-// })
+// Listen on different ports for Express and Socket.io
+const expressPort = process.env.PORT || 3000;
+const ioPort = 3001;
+
+expressServer.listen(expressPort, () => {
+    console.log(`Express server is listening on port ${expressPort}`);
+});
+
+ioServer.listen(ioPort, () => {
+    console.log(`Socket.io server is listening on port ${ioPort}`);
+});
+
+module.exports = {io}
