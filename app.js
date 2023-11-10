@@ -1,3 +1,4 @@
+//app.js
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -15,29 +16,34 @@ const io = require('socket.io')(http, {
 
 let index = 0;
 let currentDaily = daily[index];
+let ummm
 
 const cycleDaily = () => {
     index++;
-    currentDaily = daily[index];
-    console.log('Cycled daily. New daily is:', currentDaily);
+    newDaily = daily[index];
+    console.log('Cycled daily. New daily is:', newDaily);
 
     // Emit the updated daily value to all connected clients
-    io.emit('dailyUpdated', currentDaily);
+    io.emit('dailyUpdated', newDaily);
 };
+
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
     console.log('A user connected');
-
-    // Optionally, you can emit the current daily value when a user connects
-    socket.emit('dailyUpdated', currentDaily);
+    socket.emit('idk', currentDaily);
 });
 
 
+// Send the first day's value ONCE when the server is first
+io.emit('dayOne', currentDaily)
+
+console.log('This is after io.emit...')
+
 const eventTime = new schedule.RecurrenceRule();
 eventTime.tz = 'Etc/GMT-0';
-eventTime.hour = 1;
-eventTime.minute = 57;
+eventTime.hour = 4;
+eventTime.minute = 44;
 eventTime.second = 55;
 
 const scheduledEvent = schedule.scheduleJob(eventTime, cycleDaily);
@@ -51,10 +57,11 @@ app.get('/api/daily', (req, res) => {
     res.json(currentDaily);
 });
 
-console.log('Initial daily:', currentDaily)
+console.log('First ever daily:', currentDaily)
 
 const serverPort = process.env.PORT || 3000;
 
 http.listen(serverPort, () => {
     console.log(`Server is listening on port ${serverPort}`);
 });
+
