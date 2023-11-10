@@ -12,7 +12,7 @@ const { daily } = require('./imagesCycle');
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-        origin: 'http://localhost:8081',
+        origin: 'http://localhost:8080',
         methods: ['GET', 'POST'],
     }
 });
@@ -21,15 +21,15 @@ const io = require('socket.io')(http, {
 const filePath = path.join(__dirname, 'thedaily.json');
 
 
-
-let index = 0;
-let currentDaily = daily[index];
-
 const cycleDaily = () => {
 
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+
+    const jsonDaily = JSON.parse(fileContent);
+    let index = jsonDaily.day
     index++;
     newDaily = daily[index];
-    console.log('Cycled daily. New daily is:', newDaily);
+    console.log('Cycled daily. New daily is:', newDaily, 'Index is', index)
 
     const jsonString = JSON.stringify(newDaily, null, 2); // The third argument (2) is for indentation
     fs.writeFileSync(filePath, jsonString, 'utf8');
@@ -48,11 +48,9 @@ io.on('connection', (socket) => {
     // Read the JavaScript file and parse its content
     const fileContent = fs.readFileSync(filePath, 'utf8');
 
-    console.log('File content is', fileContent)
-
     const jsonDaily = JSON.parse(fileContent);
 
-    console.log('Json content is', jsonDaily)
+    console.log('Starting content is', jsonDaily)
 
     // Emit the data to the connected client
 
@@ -63,25 +61,21 @@ io.on('connection', (socket) => {
 };
 })
 
-// setInterval(() => {cycleDaily()}, 5000)
-
 
 const eventTime = new schedule.RecurrenceRule();
 eventTime.tz = 'Etc/GMT-0';
 eventTime.hour = 6;
-eventTime.minute = 42;
+eventTime.minute = 55;
 eventTime.second = 20;
 
 const scheduledEvent = schedule.scheduleJob(eventTime, cycleDaily);
 
-// Define API
-app.use(cors({ origin: 'http://localhost:8081' }));
-app.use(express.static('assets'));
 
-app.get('/api/daily', (req, res) => {
-    console.log('Data sent.', currentDaily);
-    res.json(currentDaily);
-});
+app.use('/assets/promptImages', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    next();
+  }, express.static('assets/promptImages'));
+
 
 const serverPort = process.env.PORT || 3000;
 
