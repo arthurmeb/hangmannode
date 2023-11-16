@@ -14,7 +14,7 @@ const http = require('http').createServer(app);
 // Configure socketio with cors for images and server client communiation
 const io = require('socket.io')(http, {
     cors: {
-        origin: 'http://localhost:8080',
+        origin: 'http://www.hanggman.com/',
         methods: ['GET', 'POST'],
     }
 });
@@ -92,7 +92,7 @@ const scheduledEvent = schedule.scheduleJob(eventTime, cycleDaily);
 // Allow promptImages folder to serve static files to client
 
 app.use('/assets/promptImages', (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Origin', 'http://hanggman.com/, http://www.hanggman.com/');
     next();
   }, express.static('assets/promptImages'));
 
