@@ -1,5 +1,5 @@
 {
-  "image": "http://www.hanggman.com/assets/promptImages/1wizards.png",
+  "image": "http://localhost:3000/assets/promptImages/1wizards.png",
   "lePrompt": "grandwizards wearing shades sat in a room smoking",
   "day": 0
 }
